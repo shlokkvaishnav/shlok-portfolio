@@ -1,5 +1,6 @@
 import { ScrollSystem } from '@/animation/ScrollSystem'
 import { BracketOverlay } from '@/components/BracketOverlay'
+import { AmbientLayer } from '@/components/AmbientLayer'
 import { SceneMount } from '@/components/SceneMount'
 import { Nav } from '@/components/Nav'
 import { ProgressRail } from '@/components/ProgressRail'
@@ -22,6 +23,7 @@ export default function App() {
       </a>
       <ScrollSystem />
       <SceneMount />
+      <AmbientLayer />
       <BracketOverlay />
       <Nav />
       <ProgressRail />
