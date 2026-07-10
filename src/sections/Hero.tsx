@@ -26,11 +26,17 @@ export function Hero() {
             data-hero-frame-half="bottom"
             aria-hidden
           />
+          <span
+            className="telemetry pointer-events-none absolute top-3 right-4 text-[10px] text-ink-faint"
+            aria-hidden
+          >
+            ✳ 2026
+          </span>
           <h1
             className="px-5 py-8 font-display text-[clamp(3.25rem,11vw,8.5rem)] leading-[0.95] text-ink md:px-10 md:py-12"
             data-hero-name
           >
-            Shlok Vaishnav
+            Shlok <em className="italic">Vaishnav</em>
           </h1>
         </div>
 
@@ -63,12 +69,27 @@ export function Hero() {
       </div>
 
       <div
-        className="mx-auto mb-10 flex w-full max-w-6xl items-center gap-4 px-6 md:px-10"
+        className="mx-auto mb-10 flex w-full max-w-6xl items-center gap-4 px-6 md:hidden"
         data-hero-scrollhint
         aria-hidden
       >
         <span className="telemetry text-[10px] text-ink-faint">Scroll</span>
         <span className="h-px w-16 bg-hairline-strong" />
+      </div>
+
+      {/* Desktop: vertical scroll indicator on the left edge. */}
+      <div
+        className="pointer-events-none absolute bottom-20 left-5 hidden flex-col items-center gap-4 md:flex"
+        data-hero-scrollhint
+        aria-hidden
+      >
+        <span
+          className="telemetry text-[9px] text-ink-faint"
+          style={{ writingMode: 'vertical-rl' }}
+        >
+          Scroll down
+        </span>
+        <span className="h-16 w-px bg-hairline-strong" />
       </div>
     </section>
   )

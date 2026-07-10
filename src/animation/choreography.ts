@@ -107,9 +107,9 @@ function setupHero(reduced: boolean): void {
   const frameBottom = document.querySelector<HTMLElement>('[data-hero-frame-half="bottom"]')
   const sub = document.querySelector<HTMLElement>('[data-hero-sub]')
   const ctas = document.querySelector<HTMLElement>('[data-hero-ctas]')
-  const hint = document.querySelector<HTMLElement>('[data-hero-scrollhint]')
+  const hints = gsap.utils.toArray<HTMLElement>('[data-hero-scrollhint]')
   const nav = document.querySelector<HTMLElement>('nav[aria-label="Primary"]')
-  if (!kickerText || !name || !frameTop || !frameBottom || !sub || !ctas || !hint) return
+  if (!kickerText || !name || !frameTop || !frameBottom || !sub || !ctas) return
 
   // The frame parts on first scroll — scrubbed, reversible, both modes
   // (position-derived motion is permitted under reduced motion).
@@ -134,7 +134,7 @@ function setupHero(reduced: boolean): void {
   gsap.set([frameTop, frameBottom], { scaleX: 0, transformOrigin: 'center' })
   gsap.set(name, { opacity: 0.35, filter: 'blur(12px)' })
   gsap.set([sub, ctas], { opacity: 0, y: 8 })
-  gsap.set(hint, { opacity: 0 })
+  if (hints.length) gsap.set(hints, { opacity: 0 })
   if (nav) gsap.set(nav, { autoAlpha: 0 })
   kickerText.textContent = ''
 
@@ -166,7 +166,7 @@ function setupHero(reduced: boolean): void {
     )
     .to(sub, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, 2.3)
     .to(ctas, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, 2.36)
-    .to(hint, { opacity: 1, duration: 0.4, ease: 'power3.out' }, 2.6)
+    .to(hints, { opacity: 1, duration: 0.4, ease: 'power3.out' }, 2.6)
   if (nav) tl.to(nav, { autoAlpha: 1, duration: 0.4, ease: 'power3.out' }, 2.6)
 
   // Scroll is never locked: any early input jumps the sequence to its end.
