@@ -32,3 +32,64 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+/* Exhibit corner hairlines — extend 8px outward on hover, 20ms clockwise stagger. */
+.exhibit-corner {
+  pointer-events: none;
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--color-hairline-strong);
+  border-style: solid;
+  border-width: 0;
+  transition: transform 160ms var(--ease-out-power3);
+}
+.exhibit-corner-tl {
+  top: -1px;
+  left: -1px;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+.exhibit-corner-tr {
+  top: -1px;
+  right: -1px;
+  border-top-width: 1px;
+  border-right-width: 1px;
+  transition-delay: 20ms;
+}
+.exhibit-corner-br {
+  right: -1px;
+  bottom: -1px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  transition-delay: 40ms;
+}
+.exhibit-corner-bl {
+  bottom: -1px;
+  left: -1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  transition-delay: 60ms;
+}
+article[data-exhibit]:hover .exhibit-corner-tl,
+article[data-exhibit][data-in-band='true'] .exhibit-corner-tl {
+  transform: translate(-8px, -8px);
+}
+article[data-exhibit]:hover .exhibit-corner-tr,
+article[data-exhibit][data-in-band='true'] .exhibit-corner-tr {
+  transform: translate(8px, -8px);
+}
+article[data-exhibit]:hover .exhibit-corner-br,
+article[data-exhibit][data-in-band='true'] .exhibit-corner-br {
+  transform: translate(8px, 8px);
+}
+article[data-exhibit]:hover .exhibit-corner-bl,
+article[data-exhibit][data-in-band='true'] .exhibit-corner-bl {
+  transform: translate(-8px, 8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exhibit-corner {
+    transition: none;
+  }
+}
