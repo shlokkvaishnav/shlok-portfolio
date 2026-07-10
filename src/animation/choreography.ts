@@ -14,6 +14,7 @@ import { useScrollStore } from './scrollStore'
  */
 export function initChoreography(reduced: boolean): () => void {
   const ctx = gsap.context(() => {
+    setupHero(reduced)
     setupHeadings(reduced)
     setupReveals(reduced)
     setupTimelineEntries(reduced)
@@ -22,6 +23,95 @@ export function initChoreography(reduced: boolean): () => void {
     setupDepthGrade()
   })
   return () => ctx.revert()
+}
+
+function setupHero(reduced: boolean): void {
+  const kickerText = document.querySelector<HTMLElement>('[data-hero-kicker-text]')
+  const name = document.querySelector<HTMLElement>('[data-hero-name]')
+  const frameTop = document.querySelector<HTMLElement>('[data-hero-frame-half="top"]')
+  const frameBottom = document.querySelector<HTMLElement>('[data-hero-frame-half="bottom"]')
+  const sub = document.querySelector<HTMLElement>('[data-hero-sub]')
+  const ctas = document.querySelector<HTMLElement>('[data-hero-ctas]')
+  const hint = document.querySelector<HTMLElement>('[data-hero-scrollhint]')
+  const nav = document.querySelector<HTMLElement>('nav[aria-label="Primary"]')
+  if (!kickerText || !name || !frameTop || !frameBottom || !sub || !ctas || !hint) return
+
+  // The frame parts on first scroll — scrubbed, reversible, both modes
+  // (position-derived motion is permitted under reduced motion).
+  gsap
+    .timeline({
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=80%', scrub: true },
+    })
+    .to(frameTop, { y: () => -window.innerHeight * 0.3, rotation: -1, opacity: 0.15, ease: 'power1.in' }, 0)
+    .to(frameBottom, { y: () => window.innerHeight * 0.3, rotation: 1, opacity: 0.15, ease: 'power1.in' }, 0)
+    .to(name, { scale: 0.96, opacity: 0.55, transformOrigin: 'left center', ease: 'none' }, 0)
+
+  if (reduced) return
+
+  // Entrance: rule pair draws outward, kicker types on, the name pulls into
+  // focus, then supporting lines rise. Skipped entirely if the page loads
+  // mid-document (hash link) — the static layout is already the final state.
+  if (window.scrollY > 80 || window.location.hash) return
+
+  const fullKicker = kickerText.textContent ?? ''
+  const chars = fullKicker.length
+
+  gsap.set([frameTop, frameBottom], { scaleX: 0, transformOrigin: 'center' })
+  gsap.set(name, { opacity: 0.35, filter: 'blur(12px)' })
+  gsap.set([sub, ctas], { opacity: 0, y: 8 })
+  gsap.set(hint, { opacity: 0 })
+  if (nav) gsap.set(nav, { autoAlpha: 0 })
+  kickerText.textContent = ''
+
+  const typeState = { count: 0 }
+  const tl = gsap.timeline({ paused: true })
+  tl.to([frameTop, frameBottom], { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, 0)
+    .to(
+      typeState,
+      {
+        count: chars,
+        duration: chars * 0.026,
+        ease: 'none',
+        onUpdate() {
+          kickerText.textContent = fullKicker.slice(0, Math.round(typeState.count))
+        },
+      },
+      0.55,
+    )
+    .to(
+      name,
+      {
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: 1.2,
+        ease: 'expo.out',
+        onComplete: () => gsap.set(name, { clearProps: 'filter' }),
+      },
+      1.4,
+    )
+    .to(sub, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, 2.3)
+    .to(ctas, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, 2.36)
+    .to(hint, { opacity: 1, duration: 0.4, ease: 'power3.out' }, 2.6)
+  if (nav) tl.to(nav, { autoAlpha: 1, duration: 0.4, ease: 'power3.out' }, 2.6)
+
+  // Scroll is never locked: any early input jumps the sequence to its end.
+  const skip = () => {
+    tl.progress(1)
+    removeSkips()
+  }
+  const removeSkips = () => {
+    window.removeEventListener('wheel', skip)
+    window.removeEventListener('touchstart', skip)
+    window.removeEventListener('keydown', skip)
+  }
+  window.addEventListener('wheel', skip, { passive: true, once: true })
+  window.addEventListener('touchstart', skip, { passive: true, once: true })
+  window.addEventListener('keydown', skip, { once: true })
+  tl.eventCallback('onComplete', removeSkips)
+
+  document.fonts.ready
+    .then(() => tl.play())
+    .catch(() => tl.play())
 }
 
 function setupHeadings(reduced: boolean): void {

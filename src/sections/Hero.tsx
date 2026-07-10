@@ -4,15 +4,26 @@ export function Hero() {
   return (
     <section id="hero" aria-label="Introduction" className="relative flex min-h-dvh flex-col">
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-6 pt-24 pb-16 md:px-10">
-        <p className="telemetry mb-6 text-xs text-ink-mute md:text-sm" data-hero-kicker>
-          {site.kicker}
+        <p
+          className="telemetry mb-6 min-h-[1.2em] text-xs text-ink-mute md:text-sm"
+          data-hero-kicker
+          aria-label={site.kicker}
+        >
+          <span aria-hidden data-hero-kicker-text>
+            {site.kicker}
+          </span>
         </p>
 
         {/* Hairline title block — the frame parts on first scroll. */}
         <div className="relative" data-hero-frame>
           <div
-            className="pointer-events-none absolute inset-0 border border-hairline"
-            data-hero-frame-top
+            className="pointer-events-none absolute inset-x-0 top-0 h-1/2 border-x border-t border-hairline"
+            data-hero-frame-half="top"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 border-x border-b border-hairline"
+            data-hero-frame-half="bottom"
             aria-hidden
           />
           <h1
