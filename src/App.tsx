@@ -1,4 +1,7 @@
+import { ScrollSystem } from '@/animation/ScrollSystem'
+import { BracketOverlay } from '@/components/BracketOverlay'
 import { Nav } from '@/components/Nav'
+import { ProgressRail } from '@/components/ProgressRail'
 import { Footer } from '@/components/Footer'
 import { Hero } from '@/sections/Hero'
 import { About } from '@/sections/About'
@@ -16,7 +19,10 @@ export default function App() {
       >
         Skip to content
       </a>
+      <ScrollSystem />
+      <BracketOverlay />
       <Nav />
+      <ProgressRail />
       <main id="main">
         <Hero />
         <About />
