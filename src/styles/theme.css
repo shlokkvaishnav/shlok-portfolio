@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Palette — near-black void, warm off-white ink, one gold accent for "events". */
+  --color-void: #0a0a0c;
+  --color-void-deep: #060608;
+  --color-ink: #e8e6e1;
+  --color-ink-mute: #a4a29c;
+  --color-ink-faint: #67665f;
+  --color-hairline: rgba(232, 230, 225, 0.14);
+  --color-hairline-strong: rgba(232, 230, 225, 0.28);
+  --color-gold: #e2b857;
+  --color-gold-dim: rgba(226, 184, 87, 0.36);
+  --color-panel: rgba(232, 230, 225, 0.03);
+
+  /* Type */
+  --font-display: 'Instrument Serif', 'Instrument-Serif-fallback', Georgia, serif;
+  --font-sans: 'InterVariable', 'Inter-fallback', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Plex-Mono-fallback', ui-monospace, monospace;
+
+  /* Motion — physical family (mechanical family uses steps()/linear inline). */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-power3: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-inout-sine: cubic-bezier(0.37, 0, 0.63, 1);
+  --ease-inout-power3: cubic-bezier(0.645, 0.045, 0.355, 1);
+}

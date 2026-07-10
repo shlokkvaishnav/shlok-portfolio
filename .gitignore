@@ -1,6 +1,9 @@
 node_modules
 dist
 
+# Generated at dev/build time by scripts/sync-fonts.mjs
+public/fonts
+
 # Debug
 npm-debug.log*
 
