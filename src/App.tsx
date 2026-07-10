@@ -1,5 +1,6 @@
 import { ScrollSystem } from '@/animation/ScrollSystem'
 import { BracketOverlay } from '@/components/BracketOverlay'
+import { SceneMount } from '@/components/SceneMount'
 import { Nav } from '@/components/Nav'
 import { ProgressRail } from '@/components/ProgressRail'
 import { Footer } from '@/components/Footer'
@@ -20,6 +21,7 @@ export default function App() {
         Skip to content
       </a>
       <ScrollSystem />
+      <SceneMount />
       <BracketOverlay />
       <Nav />
       <ProgressRail />
