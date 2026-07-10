@@ -21,9 +21,9 @@ export function Skills() {
                     aria-label={`${skill.name} proficiency`}
                   >
                     <span
-                      data-gauge-fill
-                      className="absolute inset-y-0 left-0 origin-left bg-gold"
-                      style={{ width: `${skill.level}%` }}
+                      data-gauge-fill={skill.level}
+                      className="absolute inset-y-0 left-0 w-full origin-left bg-gold"
+                      style={{ transform: `scaleX(${skill.level / 100})` }}
                     />
                   </span>
                   <span

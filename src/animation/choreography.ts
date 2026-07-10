@@ -19,10 +19,85 @@ export function initChoreography(reduced: boolean): () => void {
     setupReveals(reduced)
     setupTimelineEntries(reduced)
     setupSectionExits(reduced)
+    setupSkillsRitual(reduced)
     setupNavTracking()
     setupDepthGrade()
   })
   return () => ctx.revert()
+}
+
+/**
+ * The one synchronized calibration ritual: every needle sweeps to full scale
+ * in unison, holds, drops, then settles onto its true reading with a single
+ * asymmetric two-step damp while the numerals roll up in sync.
+ */
+function setupSkillsRitual(reduced: boolean): void {
+  const board = document.querySelector('[data-skills-board]')
+  if (!board || reduced) return
+
+  const fills = gsap.utils.toArray<HTMLElement>('[data-gauge-fill]')
+  const values = gsap.utils.toArray<HTMLElement>('[data-gauge-value]')
+
+  const sweep = (fill: HTMLElement, value: HTMLElement | undefined, stagger: number) => {
+    const level = Number(fill.dataset['gaugeFill'] ?? 0) / 100
+    const tl = gsap.timeline({ delay: stagger })
+    tl.fromTo(
+      fill,
+      { scaleX: 0 },
+      { scaleX: 1, duration: 0.5, ease: 'power3.in' },
+    )
+      .to(fill, { scaleX: 0.02, duration: 0.25, ease: 'power2.inOut' }, '+=0.15')
+      // Two-step damped settle: +6%, -2%, land.
+      .to(fill, { scaleX: Math.min(1, level * 1.06), duration: 0.28, ease: 'power2.out' })
+      .to(fill, { scaleX: level * 0.98, duration: 0.14, ease: 'power1.inOut' })
+      .to(fill, { scaleX: level, duration: 0.1, ease: 'power1.out' })
+    if (value) {
+      const target = Number(value.dataset['gaugeValue'] ?? 0)
+      const counter = { n: 0 }
+      tl.to(
+        counter,
+        {
+          n: target,
+          duration: 0.8,
+          ease: 'power3.out',
+          snap: { n: 1 },
+          onUpdate() {
+            value.textContent = String(Math.round(counter.n))
+          },
+        },
+        0.5,
+      )
+    }
+    return tl
+  }
+
+  gsap.set(fills, { scaleX: 0 })
+  values.forEach((v) => (v.textContent = '0'))
+
+  let ritualDone = false
+  ScrollTrigger.create({
+    trigger: board,
+    start: 'top 60%',
+    once: true,
+    onEnter() {
+      fills.forEach((fill, i) => sweep(fill, values[i], i * 0.04))
+      window.setTimeout(() => (ritualDone = true), 2200)
+    },
+  })
+
+  // Hover re-runs one gauge, throttled to once per 3s.
+  let lastRerun = 0
+  board.addEventListener('pointerover', (e) => {
+    if (!ritualDone) return
+    const row = (e.target as Element).closest('li')
+    if (!row) return
+    const now = performance.now()
+    if (now - lastRerun < 3000) return
+    const fill = row.querySelector<HTMLElement>('[data-gauge-fill]')
+    if (!fill) return
+    lastRerun = now
+    sweep(fill, row.querySelector<HTMLElement>('[data-gauge-value]') ?? undefined, 0)
+  })
 }
 
 function setupHero(reduced: boolean): void {
