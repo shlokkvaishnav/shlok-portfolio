@@ -5,6 +5,7 @@ uniform vec2 uPointer;
 uniform float uDevelop;
 uniform float uAspect;
 uniform float uDpr;
+uniform float uSingularity;
 
 attribute float aDepth;
 attribute float aSize;
@@ -30,6 +31,18 @@ void main() {
   float dist = length(toPointer * vec2(uAspect, 1.0));
   float pull = smoothstep(0.25, 0.0, dist) * 0.006 * aDepth;
   p.xy += normalize(toPointer + 1e-5) * pull;
+
+  // Gravitational lensing egg: the field swirls and falls toward the center.
+  if (uSingularity > 0.001) {
+    vec2 c = p.xy;
+    float d = length(c) + 1e-4;
+    float ang = uSingularity * 1.6 / (0.35 + d);
+    float cs = cos(ang);
+    float sn = sin(ang);
+    c = mat2(cs, -sn, sn, cs) * c;
+    c *= 1.0 - uSingularity * 0.5 / (1.0 + d * 2.5);
+    p.xy = c;
+  }
 
   gl_Position = vec4(p.x / uAspect, p.y, 0.0, 1.0);
 

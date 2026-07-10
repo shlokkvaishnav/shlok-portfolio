@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useScrollStore } from '@/animation/scrollStore'
+import { singularityStrength } from '@/eggs/fx'
 import type { QualityTier } from './quality'
 import starVert from './shaders/starfield.vert'
 import starFrag from './shaders/starfield.frag'
@@ -80,6 +81,7 @@ function Starfield({ tier }: { tier: QualityTier }) {
       uAspect: { value: 1 },
       uDpr: { value: 1 },
       uDepthGrade: { value: 0 },
+      uSingularity: { value: 0 },
     }
     return { geometry: geo, uniforms: uni }
   }, [tier])
@@ -125,6 +127,7 @@ function Starfield({ tier }: { tier: QualityTier }) {
     mat.uniforms.uAspect!.value = aspect
     mat.uniforms.uDpr!.value = viewport.dpr
     mat.uniforms.uDepthGrade!.value = progress
+    mat.uniforms.uSingularity!.value = singularityStrength(performance.now())
   })
 
   return (

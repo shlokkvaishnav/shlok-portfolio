@@ -263,3 +263,35 @@ article[data-exhibit][data-in-band='true'] .exhibit-corner-bl {
     transition: none;
   }
 }
+
+/* Constellation stars. */
+.sv-star {
+  cursor: pointer;
+}
+.sv-star:disabled {
+  cursor: default;
+}
+.sv-star-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms cubic-bezier(0.37, 0, 0.63, 1);
+}
+body.sv-spotlight .sv-star-hidden,
+.sv-star-hidden:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.sv-star-hint > span {
+  background-color: var(--color-gold);
+  animation: sv-star-pulse 1.6s ease-in-out infinite;
+}
+@keyframes sv-star-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sv-star-hint > span {
+    animation: none;
+  }
+}

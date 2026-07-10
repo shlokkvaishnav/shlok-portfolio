@@ -1,4 +1,5 @@
 import { site } from '@/content/site'
+import { FooterInstruments } from './FooterInstruments'
 
 export function Footer() {
   return (
@@ -8,8 +9,7 @@ export function Footer() {
           © {new Date().getFullYear()} {site.name}
         </p>
 
-        {/* Discovery tray + lunar phase + Morse LED mount here in later milestones. */}
-        <div className="flex items-center gap-6" data-footer-instruments />
+        <FooterInstruments />
 
         <p className="telemetry text-[10px] text-ink-faint" data-colophon>
           Build {__BUILD_COMMIT__} · {__BUILD_DATE__}

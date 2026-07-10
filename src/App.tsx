@@ -2,6 +2,8 @@ import { ScrollSystem } from '@/animation/ScrollSystem'
 import { BracketOverlay } from '@/components/BracketOverlay'
 import { AmbientLayer } from '@/components/AmbientLayer'
 import { SceneMount } from '@/components/SceneMount'
+import { ConstellationLayer } from '@/eggs/ConstellationLayer'
+import { DiscoverySystem } from '@/eggs/DiscoverySystem'
 import { Nav } from '@/components/Nav'
 import { ProgressRail } from '@/components/ProgressRail'
 import { Footer } from '@/components/Footer'
@@ -36,6 +38,8 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      <ConstellationLayer />
+      <DiscoverySystem />
     </>
   )
 }
