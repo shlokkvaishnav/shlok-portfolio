@@ -1,7 +1,39 @@
+import { lazy, Suspense } from 'react'
+import type { ComponentType, LazyExoticComponent } from 'react'
 import { Section } from '@/components/Section'
 import { SpectrumTags } from '@/components/SpectrumTags'
 import { projects } from '@/content/projects'
-import type { Project } from '@/content/types'
+import type { ExhibitKind, Project } from '@/content/types'
+import { useInViewport } from '@/hooks/useInViewport'
+
+const EXHIBITS: Record<ExhibitKind, LazyExoticComponent<ComponentType>> = {
+  nanodb: lazy(() => import('@/exhibits/NanoDbProbe')),
+  climate: lazy(() => import('@/exhibits/EquationAblation')),
+  meridian: lazy(() => import('@/exhibits/CollabGraph')),
+  cardio: lazy(() => import('@/exhibits/InferenceConsole')),
+}
+
+/** Fixed heights per exhibit so lazy mounting causes zero layout shift. */
+const EXHIBIT_MIN_H: Record<ExhibitKind, string> = {
+  nanodb: 'min-h-[19rem]',
+  climate: 'min-h-[17rem]',
+  meridian: 'min-h-[19rem]',
+  cardio: 'min-h-[21rem]',
+}
+
+function ExhibitStage({ kind }: { kind: ExhibitKind }) {
+  const [ref, mounted] = useInViewport<HTMLDivElement>('320px', true)
+  const Exhibit = EXHIBITS[kind]
+  return (
+    <div ref={ref} data-exhibit-stage={kind} className={`mt-8 ${EXHIBIT_MIN_H[kind]}`}>
+      {mounted && (
+        <Suspense fallback={null}>
+          <Exhibit />
+        </Suspense>
+      )}
+    </div>
+  )
+}
 
 function ProjectCard({ project }: { project: Project }) {
   return (
@@ -26,7 +58,7 @@ function ProjectCard({ project }: { project: Project }) {
       <p className="mt-5 max-w-prose leading-relaxed text-ink-mute">{project.description}</p>
 
       {/* Playable exhibit mounts here (lazy) — static fallback is the card itself. */}
-      <div className="mt-8" data-exhibit-stage={project.exhibit} />
+      <ExhibitStage kind={project.exhibit} />
 
       <div className="mt-8 grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
         <SpectrumTags tags={project.tags} />
