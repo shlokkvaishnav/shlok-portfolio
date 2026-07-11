@@ -23,7 +23,20 @@ export function Section({ id, index, title, children }: SectionProps) {
           >
             {title}
           </h2>
-          <div className="mt-6 h-px w-full origin-left bg-hairline" data-heading-rule aria-hidden />
+          <div
+            className="relative mt-6 h-px w-full origin-left overflow-hidden bg-hairline"
+            data-heading-rule
+            aria-hidden
+          >
+            <span
+              data-rule-glint
+              className="absolute inset-y-0 -left-16 w-16"
+              style={{
+                background:
+                  'linear-gradient(to right, transparent, rgba(226, 184, 87, 0.7), transparent)',
+              }}
+            />
+          </div>
         </header>
         {children}
       </div>

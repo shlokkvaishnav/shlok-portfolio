@@ -243,6 +243,7 @@ function setupHeadings(reduced: boolean): void {
       scrollTrigger: { trigger: heading, start: 'top 65%', once: true },
     })
     // Mechanical: the index stamps on with no tween.
+    const glint = rule.querySelector('[data-rule-glint]')
     tl.set(index, { autoAlpha: 1 })
       // Physical: rule sweeps, then the doubled title registers and inks in.
       .to(rule, { scaleX: 1, duration: 0.65, ease: 'power3.inOut' }, 0)
@@ -257,6 +258,15 @@ function setupHeadings(reduced: boolean): void {
         },
         0.15,
       )
+    // One gold glint travels the finished rule.
+    if (glint) {
+      tl.fromTo(
+        glint,
+        { x: 0 },
+        { x: () => rule.clientWidth + 128, duration: 0.45, ease: 'power2.inOut' },
+        0.7,
+      )
+    }
   })
 }
 
@@ -292,12 +302,22 @@ function setupTimelineEntries(reduced: boolean): void {
     gsap.set(node, { opacity: 0 })
     gsap.set(content, { opacity: 0.25, y: 8 })
 
+    const ping = entry.querySelector('[data-timeline-ping]')
     const tl = gsap.timeline({
       scrollTrigger: { trigger: entry, start: 'top 60%', once: true },
     })
     tl.to(connector, { scaleX: 1, duration: 0.7, ease: 'expo.out' }, 0)
       .set(node, { opacity: 1 }, 0.2) // mechanical: the node lights, no fade
       .to(content, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out', stagger: 0.06 }, 0.15)
+    if (ping) {
+      // A single expanding ring as the node lights.
+      tl.fromTo(
+        ping,
+        { opacity: 0.9, scale: 1 },
+        { opacity: 0, scale: 2.6, duration: 0.5, ease: 'expo.out' },
+        0.2,
+      )
+    }
   })
 }
 

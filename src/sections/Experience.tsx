@@ -18,6 +18,11 @@ export function Experience() {
               data-timeline-node
               aria-hidden
             />
+            <span
+              className="absolute top-[5px] -left-[37px] size-[5px] rounded-full border border-gold opacity-0 md:-left-[70px]"
+              data-timeline-ping
+              aria-hidden
+            />
             <p className="telemetry text-[11px] text-ink-faint">
               {entry.start} — {entry.end ?? 'PRESENT'}
             </p>
