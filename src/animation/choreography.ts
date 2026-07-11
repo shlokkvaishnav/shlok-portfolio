@@ -22,6 +22,7 @@ export function initChoreography(reduced: boolean): () => void {
     setupSkillsRitual(reduced)
     setupExhibitArrivals(reduced)
     setupMagnetic(reduced)
+    setupNavPresence(reduced)
     setupNavTracking()
     setupDepthGrade()
   })
@@ -419,6 +420,30 @@ function setupMagnetic(reduced: boolean): void {
 
 /** Listener cleanups that gsap.context can't revert on its own. */
 const cleanupFns: Array<() => void> = []
+
+/**
+ * The nav steps aside while you dive and returns the moment you look up.
+ * Never hides while a dialog (terminal, shortcuts) is open.
+ */
+function setupNavPresence(reduced: boolean): void {
+  if (reduced) return
+  const nav = document.querySelector<HTMLElement>('nav[aria-label="Primary"]')
+  if (!nav) return
+  let hidden = false
+  const toY = gsap.quickTo(nav, 'yPercent', { duration: 0.3, ease: 'power3.out' })
+  const unsub = useScrollStore.subscribe((state) => {
+    const divingDown = state.velocity > 0.15 && window.scrollY > 200
+    const lookingUp = state.velocity < -0.05 || window.scrollY < 200
+    if (!hidden && divingDown && !document.querySelector('[role="dialog"]')) {
+      hidden = true
+      toY(-100)
+    } else if (hidden && lookingUp) {
+      hidden = false
+      toY(0)
+    }
+  })
+  cleanupFns.push(unsub)
+}
 
 function setupNavTracking(): void {
   const sections = ['hero', ...navItems.map((n) => n.id)]
