@@ -38,7 +38,7 @@ function Toast() {
   return (
     <div aria-live="polite" className="fixed bottom-6 left-6 z-50">
       {lastUnlock !== null && (
-        <p className="telemetry border border-hairline bg-void/95 px-4 py-3 text-[10px] text-ink">
+        <p className="telemetry toast-in border border-hairline bg-void/95 px-4 py-3 text-[10px] text-ink">
           <span className="text-gold">◆ Discovery</span> — {DISCOVERIES[lastUnlock].title} ·{' '}
           {unlocked.length}/{DISCOVERY_IDS.length}
         </p>

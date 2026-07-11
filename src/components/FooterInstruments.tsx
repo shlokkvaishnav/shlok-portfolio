@@ -50,6 +50,7 @@ function MorseBeacon() {
 
 function DiscoveryTray() {
   const unlocked = useEggsStore((s) => s.unlocked)
+  const lastUnlock = useEggsStore((s) => s.lastUnlock)
   return (
     <span
       className="flex items-center gap-2"
@@ -61,9 +62,9 @@ function DiscoveryTray() {
           <span
             key={id}
             title={found ? DISCOVERIES[id].title : 'undiscovered'}
-            className={`telemetry text-[10px] transition-colors duration-500 ${
+            className={`telemetry inline-block text-[10px] transition-colors duration-500 ${
               found ? 'text-gold' : 'text-ink/15'
-            }`}
+            } ${lastUnlock === id ? 'tray-pulse' : ''}`}
             aria-hidden
           >
             {DISCOVERIES[id].glyph}
