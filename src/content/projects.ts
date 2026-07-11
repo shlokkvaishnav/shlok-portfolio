@@ -14,6 +14,27 @@ export const projects: readonly Project[] = [
     github: 'https://github.com/shlokkvaishnav/nano-db',
     demo: null,
     exhibit: 'nanodb',
+    caseStudy: {
+      problem:
+        'Vector databases are usually consumed as black boxes. I wanted to understand — and own — every layer: how approximate nearest-neighbor search actually works, why it is fast, and what it takes to make an index survive a process restart.',
+      approach:
+        'Implement HNSW from the paper up in modern C++, then make it production-shaped: persistence to disk instead of a memory-only toy, SIMD-accelerated distance kernels, and concurrent insertion so build time scales with cores.',
+      architecture: [
+        'Python bindings (pybind11)',
+        'Query planner / top-k API',
+        'HNSW graph — multi-threaded insert',
+        'AVX2 distance kernels',
+        'Disk-backed index storage',
+      ],
+      metrics: [
+        ['Index', 'Disk-based HNSW, restart-safe'],
+        ['Kernels', 'AVX2-vectorized distance ops'],
+        ['Insertion', 'Multi-threaded graph build'],
+        ['Interface', 'C++ core with Python bindings'],
+      ],
+      learnings:
+        'Cache behavior dominates: the graph layout on disk mattered more than instruction-level tricks, and vectorized kernels only pay off once memory access patterns cooperate.',
+    },
   },
   {
     id: 'climate-equation-discovery',
@@ -28,6 +49,27 @@ export const projects: readonly Project[] = [
     github: 'https://github.com/shlokkvaishnav/climate-equation-discovery',
     demo: null,
     exhibit: 'climate',
+    caseStudy: {
+      problem:
+        'Symbolic regression can rediscover physical laws from data, but naive search drowns in candidate expressions and happily returns equations that fit numbers while violating physics.',
+      approach:
+        'An autonomous agent loop around PySR: generate candidate equations, validate them against physical constraints (units, limiting behavior), prune the memory of dead-end expression families dynamically, and track climate regimes with Bayesian updating so one equation isn’t forced to explain qualitatively different eras.',
+      architecture: [
+        'Climate observation datasets',
+        'Symbolic regression engine (PySR)',
+        'Physics-validation gate',
+        'Dynamic memory pruning',
+        'Bayesian regime tracker',
+      ],
+      metrics: [
+        ['Search', 'Symbolic regression, agent-driven'],
+        ['Validation', 'Physics-constraint gating'],
+        ['Memory', 'Dynamic pruning of dead ends'],
+        ['Regimes', 'Bayesian change tracking'],
+      ],
+      learnings:
+        'The validation gate is the product: constraining the search space with physics beats any amount of extra compute spent exploring nonsense.',
+    },
   },
   {
     id: 'meridian-analytics',
@@ -42,6 +84,27 @@ export const projects: readonly Project[] = [
     github: 'https://github.com/shlokkvaishnav/meridian-analytics',
     demo: 'https://meridian-analytics.vercel.app',
     exhibit: 'meridian',
+    caseStudy: {
+      problem:
+        'Engineering analytics tools tend to become surveillance: individual-level dashboards that erode trust while still failing to answer the useful question — where is the team actually stuck?',
+      approach:
+        'Aggregate first, privacy by design: model review relationships and PR flow at the team level, surface bottlenecks and silo risk as patterns rather than league tables, and flag burnout signals early instead of reporting them after the fact.',
+      architecture: [
+        'Git/PR data ingestion',
+        'Team-level aggregation layer',
+        'Bottleneck & silo detection (ML)',
+        'Velocity & burnout signals',
+        'React dashboard',
+      ],
+      metrics: [
+        ['Focus', 'PR bottlenecks & review flow'],
+        ['Privacy', 'Team-level, no individual scores'],
+        ['Signals', 'Velocity trends, burnout risk'],
+        ['Stack', 'TypeScript end to end'],
+      ],
+      learnings:
+        'Framing decides adoption: the same data reads as help or as surveillance depending on the aggregation level you choose to expose.',
+    },
   },
   {
     id: 'cardiovascular-risk',
@@ -56,6 +119,27 @@ export const projects: readonly Project[] = [
     github: 'https://github.com/shlokkvaishnav/cardiovascular-risk',
     demo: 'https://cardiovascular-risk.vercel.app',
     exhibit: 'cardio',
+    caseStudy: {
+      problem:
+        'Most ML class projects end at a notebook with a good AUC. The interesting work starts after that: making a model reproducible, testable, and deployable by someone who isn’t its author.',
+      approach:
+        'Treat the predictor as a product: a modular ETL pipeline with explicit validation stages, experiment tracking so every model version is reconstructible, and an inference service with the same interface in development and production.',
+      architecture: [
+        'Modular ETL & validation',
+        'Training + MLflow tracking',
+        'Model registry',
+        'FastAPI inference service',
+        'Docker deployment',
+      ],
+      metrics: [
+        ['Pipeline', 'Modular ETL, testable stages'],
+        ['Tracking', 'MLflow experiments & registry'],
+        ['Serving', 'FastAPI, containerized'],
+        ['Deploy', 'Docker-ready, live demo'],
+      ],
+      learnings:
+        'Reproducibility is a feature you build, not a habit you promise — pinning the pipeline beat improving the model for real-world usefulness.',
+    },
   },
 ]
 

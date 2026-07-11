@@ -1,5 +1,15 @@
 export type ExhibitKind = 'nanodb' | 'climate' | 'meridian' | 'cardio'
 
+export interface CaseStudy {
+  problem: string
+  approach: string
+  /** Pipeline/architecture steps, rendered as connected hairline boxes. */
+  architecture: readonly string[]
+  /** Short label/value pairs, e.g. ['Index', 'Disk-based HNSW']. */
+  metrics: readonly (readonly [string, string])[]
+  learnings: string
+}
+
 export interface Project {
   id: string
   title: string
@@ -13,6 +23,7 @@ export interface Project {
   github: string
   demo: string | null
   exhibit: ExhibitKind
+  caseStudy: CaseStudy
 }
 
 export interface ExperienceEntry {
@@ -23,6 +34,10 @@ export interface ExperienceEntry {
   role: string
   org: string
   summary: string
+  /** Concrete accomplishments, revealed by the Details toggle / journey band. */
+  highlights: readonly string[]
+  /** Cosmic-epoch marker for the journey band (scientific stamp, aria-hidden). */
+  epoch: { label: string; stamp: string }
 }
 
 export interface Skill {
