@@ -6,12 +6,19 @@
   --color-void-deep: #060608;
   --color-ink: #e8e6e1;
   --color-ink-mute: #a4a29c;
-  --color-ink-faint: #67665f;
+  --color-ink-faint: #7d7b72; /* ≥4.5:1 on void for small mono labels */
   --color-hairline: rgba(232, 230, 225, 0.14);
   --color-hairline-strong: rgba(232, 230, 225, 0.28);
   --color-gold: #e2b857;
   --color-gold-dim: rgba(226, 184, 87, 0.36);
   --color-panel: rgba(232, 230, 225, 0.03);
+
+  /* Blackbody epoch spectrum — the cosmos layer only (stamps, band, sky).
+     The universe cools as you scroll: photon-hot → solar → ember. Gold stays
+     the sole interaction accent. */
+  --color-photon: #cdd8f2;
+  --color-solar: #e2b857;
+  --color-ember: #c05a38;
 
   /* Type */
   --font-display: 'Instrument Serif', 'Instrument-Serif-fallback', Georgia, serif;
