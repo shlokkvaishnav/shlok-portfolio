@@ -1,3 +1,4 @@
+import { ExpandToggle } from '@/components/ExpandToggle'
 import { Section } from '@/components/Section'
 import { experience } from '@/content/experience'
 
@@ -29,6 +30,17 @@ export function Experience() {
             <h3 className="mt-3 font-display text-2xl text-ink md:text-3xl">{entry.role}</h3>
             <p className="telemetry mt-1 text-[11px] text-ink-mute">{entry.org}</p>
             <p className="mt-4 max-w-prose leading-relaxed text-ink-mute">{entry.summary}</p>
+            <div className="mt-4">
+              <ExpandToggle label="Details">
+                <ul className="space-y-3 pt-3 pb-1">
+                  {entry.highlights.map((h) => (
+                    <li key={h.slice(0, 32)} className="detail-bullet max-w-prose text-sm leading-relaxed text-ink-mute">
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+              </ExpandToggle>
+            </div>
           </li>
         ))}
       </ol>

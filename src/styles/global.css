@@ -288,6 +288,40 @@ article[data-exhibit][data-in-band='true'] .exhibit-corner-bl {
   }
 }
 
+/* Height expansion via grid rows — no JS height animation, zero reflow cost. */
+.expand-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms var(--ease-out-power3);
+}
+.expand-grid[data-open='true'] {
+  grid-template-rows: 1fr;
+}
+.expand-grid > * {
+  overflow: hidden;
+  min-height: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .expand-grid {
+    transition: none;
+  }
+}
+
+/* Detail bullets get the gold entry tick. */
+.detail-bullet {
+  position: relative;
+  padding-left: 1rem;
+}
+.detail-bullet::before {
+  content: '';
+  position: absolute;
+  top: 0.65em;
+  left: 0;
+  height: 2px;
+  width: 8px;
+  background: var(--color-gold);
+}
+
 /* Discovery pulses: newest tray glyph and toast entry. */
 .tray-pulse {
   animation: tray-pulse 600ms var(--ease-out-expo);
