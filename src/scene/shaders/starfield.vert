@@ -6,6 +6,8 @@ uniform float uDevelop;
 uniform float uAspect;
 uniform float uDpr;
 uniform float uSingularity;
+uniform float uDrift;
+uniform float uIdleAmp;
 
 attribute float aDepth;
 attribute float aSize;
@@ -25,6 +27,15 @@ void main() {
 
   // Parallax travel: nearer stars sweep farther across the page scroll.
   p.y = wrapY(p.y + uScroll * aDepth * 1.7);
+
+  // Always-on breath: <=2px of per-star life, felt rather than seen.
+  p.xy += vec2(
+    sin(uDrift * 0.05 + aPhase * 6.2831),
+    cos(uDrift * 0.04 + aPhase * 4.0)
+  ) * 0.0016 * aDepth;
+
+  // Idle drift: after 45s without input the whole field wanders slowly home.
+  p.xy += vec2(sin(uDrift * 0.12), cos(uDrift * 0.09)) * 0.008 * uIdleAmp;
 
   // Cursor gravity: stars within ~0.25 units lean toward the pointer, max ~2px.
   vec2 toPointer = uPointer - p.xy;

@@ -36,7 +36,8 @@ interface SceneProps {
 function Starfield({ tier }: { tier: QualityTier }) {
   const material = useRef<THREE.ShaderMaterial>(null)
   const pointer = useRef({ x: 0, y: -2 })
-  const smoothed = useRef({ velocity: 0, pointerX: 0, pointerY: -2, develop: 0 })
+  const smoothed = useRef({ velocity: 0, pointerX: 0, pointerY: -2, develop: 0, idle: 0 })
+  const lastInput = useRef(0) // set to a real timestamp on first input/frame
   const { size, viewport } = useThree()
   const aspect = size.width / size.height
 
@@ -82,6 +83,8 @@ function Starfield({ tier }: { tier: QualityTier }) {
       uDpr: { value: 1 },
       uDepthGrade: { value: 0 },
       uSingularity: { value: 0 },
+      uDrift: { value: 0 },
+      uIdleAmp: { value: 0 },
     }
     return { geometry: geo, uniforms: uni }
   }, [tier])
@@ -89,8 +92,11 @@ function Starfield({ tier }: { tier: QualityTier }) {
   useEffect(() => () => geometry.dispose(), [geometry])
 
   useEffect(() => {
-    if (!window.matchMedia('(pointer: fine)').matches) return
+    const touch = () => {
+      lastInput.current = performance.now()
+    }
     const onMove = (e: PointerEvent) => {
+      touch()
       pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1
       pointer.current.y = -((e.clientY / window.innerHeight) * 2 - 1)
     }
@@ -98,11 +104,22 @@ function Starfield({ tier }: { tier: QualityTier }) {
       pointer.current.x = 0
       pointer.current.y = -2 // park it far away
     }
-    window.addEventListener('pointermove', onMove, { passive: true })
-    document.documentElement.addEventListener('pointerleave', onLeave)
+    const fine = window.matchMedia('(pointer: fine)').matches
+    if (fine) {
+      window.addEventListener('pointermove', onMove, { passive: true })
+      document.documentElement.addEventListener('pointerleave', onLeave)
+    }
+    window.addEventListener('wheel', touch, { passive: true })
+    window.addEventListener('keydown', touch)
+    window.addEventListener('touchstart', touch, { passive: true })
     return () => {
-      window.removeEventListener('pointermove', onMove)
-      document.documentElement.removeEventListener('pointerleave', onLeave)
+      if (fine) {
+        window.removeEventListener('pointermove', onMove)
+        document.documentElement.removeEventListener('pointerleave', onLeave)
+      }
+      window.removeEventListener('wheel', touch)
+      window.removeEventListener('keydown', touch)
+      window.removeEventListener('touchstart', touch)
     }
   }, [])
 
@@ -128,6 +145,14 @@ function Starfield({ tier }: { tier: QualityTier }) {
     mat.uniforms.uDpr!.value = viewport.dpr
     mat.uniforms.uDepthGrade!.value = progress
     mat.uniforms.uSingularity!.value = singularityStrength(performance.now())
+    mat.uniforms.uDrift!.value += dt
+
+    // Idle drift: fade in over ~8s after 45s without input, home in ~1.6s.
+    if (lastInput.current === 0) lastInput.current = performance.now()
+    const idle = performance.now() - lastInput.current > 45_000
+    const rate = idle ? dt / 8 : -dt / 1.6
+    s.idle = THREE.MathUtils.clamp(s.idle + rate, 0, 1)
+    mat.uniforms.uIdleAmp!.value = s.idle
   })
 
   return (

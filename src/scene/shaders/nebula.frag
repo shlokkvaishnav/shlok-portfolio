@@ -41,7 +41,8 @@ void main() {
   vec3 warmth = vec3(0.075, 0.055, 0.035);
   vec3 tint = mix(deep, warmth, smoothstep(0.8, 1.0, uDepthGrade));
 
-  vec3 col = tint * smoothstep(0.42, 0.95, n) * 0.5;
+  // A slow breath so the field never reads as a still image.
+  vec3 col = tint * smoothstep(0.42, 0.95, n) * 0.5 * (0.92 + 0.08 * sin(uTime * 0.07));
 
   gl_FragColor = vec4(col, 1.0);
 }
