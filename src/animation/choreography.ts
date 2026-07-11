@@ -20,6 +20,7 @@ export function initChoreography(reduced: boolean): () => void {
     setupTimelineEntries(reduced)
     setupSectionExits(reduced)
     setupSkillsRitual(reduced)
+    setupExhibitArrivals(reduced)
     setupMagnetic(reduced)
     setupNavTracking()
     setupDepthGrade()
@@ -315,6 +316,34 @@ function setupSectionExits(reduced: boolean): void {
         scrub: true,
       },
     })
+  })
+}
+
+/**
+ * Exhibit arrival: a gold light cone warms up over each project card with
+ * two brief flicker dips (the site's one permitted imperfection) while the
+ * spectrum-strip emission lines draw in bottom-up.
+ */
+function setupExhibitArrivals(reduced: boolean): void {
+  if (reduced) return
+  gsap.utils.toArray<HTMLElement>('article[data-exhibit]').forEach((card) => {
+    const cone = card.querySelector('[data-light-cone]')
+    const lines = card.querySelectorAll<HTMLElement>('[data-spectrum-line]')
+    if (lines.length) gsap.set(lines, { scaleY: 0, transformOrigin: 'bottom' })
+
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: card, start: 'top 50%', once: true },
+    })
+    if (cone) {
+      tl.to(cone, { opacity: 0.7, duration: 0.25, ease: 'power1.in' }, 0)
+        .to(cone, { opacity: 0.35, duration: 0.06, ease: 'none' })
+        .to(cone, { opacity: 1, duration: 0.23, ease: 'power1.out' })
+        .to(cone, { opacity: 0.85, duration: 0.06, ease: 'none' })
+        .to(cone, { opacity: 1, duration: 0.1, ease: 'none' })
+    }
+    if (lines.length) {
+      tl.to(lines, { scaleY: 1, duration: 0.3, ease: 'power3.out', stagger: 0.04 }, 0.1)
+    }
   })
 }
 

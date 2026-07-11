@@ -264,6 +264,14 @@ article[data-exhibit][data-in-band='true'] .exhibit-corner-bl {
   }
 }
 
+/* Spectrum strips: lines brighten on band hover; a hovered line goes gold. */
+[data-spectrum]:hover [data-spectrum-line] {
+  background-color: rgba(232, 230, 225, 0.9);
+}
+[data-spectrum] [data-spectrum-line]:hover {
+  background-color: var(--color-gold);
+}
+
 /* Kicker caret: two mechanical blinks after the type-on, then removed. */
 .kicker-caret {
   display: inline-block;

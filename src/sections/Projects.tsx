@@ -41,6 +41,16 @@ function ProjectCard({ project }: { project: Project }) {
       data-exhibit={project.exhibit}
       className="group relative border border-hairline p-6 md:p-10"
     >
+      {/* Gold light cone that warms up when the exhibit arrives. */}
+      <div
+        data-light-cone
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-0"
+        style={{
+          background:
+            'radial-gradient(60% 50% at 50% 0%, rgba(226, 184, 87, 0.06), transparent 70%)',
+        }}
+      />
       {/* Corner hairlines that extend outward on hover. */}
       <span className="exhibit-corner exhibit-corner-tl" aria-hidden />
       <span className="exhibit-corner exhibit-corner-tr" aria-hidden />
