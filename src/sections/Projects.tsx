@@ -4,6 +4,7 @@ import { Section } from '@/components/Section'
 import { SpectrumTags } from '@/components/SpectrumTags'
 import { projects } from '@/content/projects'
 import type { ExhibitKind, Project } from '@/content/types'
+import { useGitHubStats, relativePush } from '@/hooks/useGitHubStats'
 import { useInViewport } from '@/hooks/useInViewport'
 
 const EXHIBITS: Record<ExhibitKind, LazyExoticComponent<ComponentType>> = {
@@ -36,8 +37,11 @@ function ExhibitStage({ kind }: { kind: ExhibitKind }) {
 }
 
 function ProjectCard({ project }: { project: Project }) {
+  const [cardRef, seen] = useInViewport<HTMLElement>('200px', true)
+  const gh = useGitHubStats(project.github, seen)
   return (
     <article
+      ref={cardRef}
       data-exhibit={project.exhibit}
       className="group relative border border-hairline p-6 md:p-10"
     >
@@ -61,6 +65,12 @@ function ProjectCard({ project }: { project: Project }) {
         <h3 className="font-display text-3xl text-ink md:text-4xl">{project.title}</h3>
         <p className="telemetry text-[10px] text-ink-faint">
           {project.year} · {project.category} · {project.status}
+          {gh !== null && (
+            <span className="animate-[toast-in_200ms_ease-out] text-ink-mute">
+              {' '}
+              · ★ {gh.stars} · {relativePush(gh.pushedAt)}
+            </span>
+          )}
         </p>
       </div>
 
