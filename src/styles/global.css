@@ -264,6 +264,22 @@ article[data-exhibit][data-in-band='true'] .exhibit-corner-bl {
   }
 }
 
+/* Kicker caret: two mechanical blinks after the type-on, then removed. */
+.kicker-caret {
+  display: inline-block;
+  width: 6px;
+  height: 0.9em;
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  background: var(--color-gold);
+  animation: caret-blink 700ms steps(1) 2;
+}
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 /* Constellation stars. */
 .sv-star {
   cursor: pointer;

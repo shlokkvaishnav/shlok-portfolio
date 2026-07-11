@@ -51,7 +51,8 @@ export function Hero() {
                 href={s.href}
                 target="_blank"
                 rel="noreferrer"
-                className="telemetry text-xs text-ink-mute transition-colors hover:text-ink"
+                data-magnetic
+                className="telemetry inline-block text-xs text-ink-mute transition-colors hover:text-ink"
               >
                 {s.label} ↗
               </a>
@@ -60,7 +61,8 @@ export function Hero() {
           <li>
             <a
               href={`mailto:${site.email}`}
-              className="telemetry text-xs text-gold transition-colors hover:text-ink"
+              data-magnetic
+              className="telemetry inline-block text-xs text-gold transition-colors hover:text-ink"
             >
               Email
             </a>

@@ -20,10 +20,15 @@ export function initChoreography(reduced: boolean): () => void {
     setupTimelineEntries(reduced)
     setupSectionExits(reduced)
     setupSkillsRitual(reduced)
+    setupMagnetic(reduced)
     setupNavTracking()
     setupDepthGrade()
   })
-  return () => ctx.revert()
+  return () => {
+    ctx.revert()
+    cleanupFns.forEach((fn) => fn())
+    cleanupFns.length = 0
+  }
 }
 
 /**
@@ -123,6 +128,27 @@ function setupHero(reduced: boolean): void {
 
   if (reduced) return
 
+  // Presence parallax: the name leans gently away from the cursor (±4px).
+  const hero = document.getElementById('hero')
+  if (hero && window.matchMedia('(pointer: fine)').matches) {
+    const toNX = gsap.quickTo(name, 'x', { duration: 0.6, ease: 'power3.out' })
+    const toNY = gsap.quickTo(name, 'y', { duration: 0.6, ease: 'power3.out' })
+    const onHeroMove = (e: PointerEvent) => {
+      toNX((e.clientX / window.innerWidth - 0.5) * -8)
+      toNY((e.clientY / window.innerHeight - 0.5) * -8)
+    }
+    const onHeroLeave = () => {
+      toNX(0)
+      toNY(0)
+    }
+    hero.addEventListener('pointermove', onHeroMove, { passive: true })
+    hero.addEventListener('pointerleave', onHeroLeave)
+    cleanupFns.push(() => {
+      hero.removeEventListener('pointermove', onHeroMove)
+      hero.removeEventListener('pointerleave', onHeroLeave)
+    })
+  }
+
   // Entrance: rule pair draws outward, kicker types on, the name pulls into
   // focus, then supporting lines rise. Skipped entirely if the page loads
   // mid-document (hash link) — the static layout is already the final state.
@@ -149,6 +175,14 @@ function setupHero(reduced: boolean): void {
         ease: 'none',
         onUpdate() {
           kickerText.textContent = fullKicker.slice(0, Math.round(typeState.count))
+        },
+        onComplete() {
+          // Two mechanical caret blinks, then gone.
+          const caret = document.createElement('span')
+          caret.className = 'kicker-caret'
+          caret.setAttribute('aria-hidden', 'true')
+          kickerText.after(caret)
+          caret.addEventListener('animationend', () => caret.remove())
         },
       },
       0.55,
@@ -283,6 +317,59 @@ function setupSectionExits(reduced: boolean): void {
     })
   })
 }
+
+/**
+ * Magnetic pull: [data-magnetic] elements lean up to 3px toward a nearby
+ * cursor and spring home when it leaves. Fine pointers, full motion only.
+ */
+function setupMagnetic(reduced: boolean): void {
+  if (reduced || !window.matchMedia('(pointer: fine)').matches) return
+  const REACH = 80
+  const MAX = 3
+
+  const targets = gsap.utils.toArray<HTMLElement>('[data-magnetic]').map((el) => ({
+    el,
+    toX: gsap.quickTo(el, 'x', { duration: 0.4, ease: 'power3.out' }),
+    toY: gsap.quickTo(el, 'y', { duration: 0.4, ease: 'power3.out' }),
+  }))
+  if (targets.length === 0) return
+
+  let raf = 0
+  let px = 0
+  let py = 0
+  const apply = () => {
+    raf = 0
+    for (const t of targets) {
+      const r = t.el.getBoundingClientRect()
+      const cx = r.left + r.width / 2
+      const cy = r.top + r.height / 2
+      const dx = px - cx
+      const dy = py - cy
+      const d = Math.hypot(dx, dy)
+      if (d < REACH) {
+        const s = (1 - d / REACH) * MAX
+        t.toX((dx / (d || 1)) * s)
+        t.toY((dy / (d || 1)) * s)
+      } else {
+        t.toX(0)
+        t.toY(0)
+      }
+    }
+  }
+  const onMove = (e: PointerEvent) => {
+    px = e.clientX
+    py = e.clientY
+    if (!raf) raf = requestAnimationFrame(apply)
+  }
+  window.addEventListener('pointermove', onMove, { passive: true })
+  cleanupFns.push(() => {
+    window.removeEventListener('pointermove', onMove)
+    if (raf) cancelAnimationFrame(raf)
+  })
+}
+
+/** Listener cleanups that gsap.context can't revert on its own. */
+const cleanupFns: Array<() => void> = []
 
 function setupNavTracking(): void {
   const sections = ['hero', ...navItems.map((n) => n.id)]

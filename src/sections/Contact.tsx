@@ -11,6 +11,7 @@ export function Contact() {
             <a
               href={`mailto:${site.email}`}
               data-contact-email
+              data-magnetic
               className="inline-block font-display text-[clamp(1.6rem,5.5vw,4rem)] leading-tight text-ink underline decoration-hairline-strong decoration-1 underline-offset-8 transition-colors hover:decoration-gold"
             >
               {site.email}
