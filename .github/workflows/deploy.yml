@@ -19,15 +19,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build
+
+      # The site is static — no npm, no bundler. The only build-time step is
+      # substituting the analytics site id, which is a repository variable
+      # rather than a secret: it is public in the page source either way.
+      # Unset simply means the snippet never inserts the script.
+      - name: Inject analytics site id
+        env:
+          UMAMI_SITE_ID: ${{ vars.UMAMI_SITE_ID }}
+        run: |
+          if [ -n "$UMAMI_SITE_ID" ]; then
+            sed -i "s/var id = 'UMAMI_SITE_ID';/var id = '$UMAMI_SITE_ID';/" index.html
+            echo "Analytics enabled."
+          else
+            echo "UMAMI_SITE_ID unset — analytics stays off."
+          fi
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: .
 
   deploy:
     environment:

@@ -1,16 +1,3 @@
-node_modules
-dist
-
-# Generated at dev/build time by scripts/sync-fonts.mjs
-public/fonts
-
-# Debug
-npm-debug.log*
-
-# Local env files
-.env
-.env*.local
-
 # Editor
 .vscode
 .idea
@@ -19,6 +6,13 @@ npm-debug.log*
 
 # Claude Code
 .claude
+
+# Local env files
+.env
+.env*.local
+
+# Logs
+*.log
 
 # OS
 Thumbs.db
